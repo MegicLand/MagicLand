@@ -8,6 +8,10 @@ public class AttackState : State {
     private Transform player;
     private PlayerBehavior playerBehavior;
 
+    private bool isHolding;
+    private Vector3 targetPos;
+    private GameObject holdEffect;
+
     public AttackState(Transform player)
     {
         this.player = player;
@@ -22,6 +26,9 @@ public class AttackState : State {
     public override void EnterState(State preState)
     {
         Debug.Log("Attack");
+
+        isHolding = true;
+        holdEffect = GameObject.Instantiate(playerBehavior.holdEffect);
     }
 
     public override void LeaveState(State nextState)
@@ -31,19 +38,35 @@ public class AttackState : State {
 
     public override void OnUpdate()
     {
-        if (!HandInfo.handPressed)
+        if (HandInfo.handPressed && isHolding)
         {
+            holdEffect.transform.position = HandInfo.handPosition_World;
+        }
+        else if (!HandInfo.handPressed && isHolding)
+        {
+            GameObject.Destroy(holdEffect);
             RaycastHit hit;
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward * 10);
-            Physics.Raycast(ray, out hit);
-            Vector3[] path = new Vector3[3];
-            path[0] = player.position;
-            path[1] = (player.position + hit.point) / 2;
-            path[2] = hit.point;
+            if (Physics.Raycast(ray, out hit))
+            {
+                targetPos = hit.point;
+            }
+            else
+            {
+                targetPos = Camera.main.transform.position + Camera.main.transform.forward * 10;
+            }
 
             //魔法生效**************************************************************************************
+            GameObject magic = GameObject.Instantiate(playerBehavior.magic, HandInfo.handPosition_World, Quaternion.Euler(Vector3.zero));
+            LightingChain lightingChain = magic.GetComponent<LightingChain>();
+            lightingChain.startPos = HandInfo.handPosition_World;
+            lightingChain.endPos = targetPos;
 
-            playerBehavior.ToDrawRuneState();
+            isHolding = false;
+        }
+        else
+        {
+
         }
     }
 }

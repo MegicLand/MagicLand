@@ -7,9 +7,10 @@ using HoloToolkit.Unity;
 public class PlayerBehavior : MonoBehaviour {
 
     public LineRenderer runeLine;//绘制符文的线
-    public GameObject standardRune;//符文提示轨迹点
+    public StandardRune standardRune;//符文提示轨迹点
 
     public GameObject magic;//当前要释放的魔法
+    public GameObject holdEffect;//准备释放魔法特效
 
     private PlayerFSM fsm;
     private PlayerInfo info;
@@ -30,6 +31,7 @@ public class PlayerBehavior : MonoBehaviour {
     /// </summary>
     public void ToDrawRuneState()
     {
+        StartCoroutine(standardRune.FadeIn());
         fsm.SwitchState((int)PlayerState.DrawRuneState);
     }
 
@@ -47,14 +49,8 @@ public class PlayerBehavior : MonoBehaviour {
     /// <param name="rate"> 绘制符文的完成度，结界默认为1 </param>
     public void ToAttackState(float rate = 1)
     {
-        
-        StartCoroutine(FinishRuneAnim());
-    }
-    IEnumerator FinishRuneAnim()
-    {
-        yield return new WaitForSeconds(1);
+        StartCoroutine(standardRune.FadeOut());
         fsm.SwitchState((int)PlayerState.AttackState);
-        yield return 0;
     }
 
     /// <summary>

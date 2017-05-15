@@ -80,7 +80,7 @@ public class DrawRuneState : State
             line.positionCount = lineCount; //末端点为最后绘制点
             if (lineCount > 0)
             {
-                playerBehavior.ToAttackState((float)line.positionCount / standardPoint.Count);
+                playerBehavior.ToDrawRuneState();
             }
         }
     }

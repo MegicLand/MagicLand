@@ -8,8 +8,12 @@ public class StandardRune : MonoBehaviour {
     public float keyPointNum = 5;
     private List<GameObject> keyPoint;
 
+    public float fadeSpeed = 2;
+    private Image standardRuneImage;
+
 	// Use this for initialization
 	void Start () {
+        standardRuneImage = GetComponent<Image>();
         init();
 	}
 
@@ -53,5 +57,37 @@ public class StandardRune : MonoBehaviour {
                 Debug.DrawLine(keyPoint[i].transform.position, keyPoint[i + 1].transform.position, Color.red);
             }
         }
+    }
+
+    public IEnumerator FadeIn()
+    {
+        Color startColor = new Color(standardRuneImage.color.r, standardRuneImage.color.g, standardRuneImage.color.b, 0);
+        Color endColor = new Color(standardRuneImage.color.r, standardRuneImage.color.g, standardRuneImage.color.b, 1);
+        float timer = 0;
+        standardRuneImage.color = startColor;
+        while (standardRuneImage.color.a < 1)
+        {
+            standardRuneImage.color = Color.Lerp(startColor, endColor, fadeSpeed * timer);
+            timer += Time.deltaTime;
+            yield return 0;
+        }
+        standardRuneImage.color = endColor;
+        yield return 0;
+    }
+
+    public IEnumerator FadeOut()
+    {
+        Color startColor = new Color(standardRuneImage.color.r, standardRuneImage.color.g, standardRuneImage.color.b, 1);
+        Color endColor = new Color(standardRuneImage.color.r, standardRuneImage.color.g, standardRuneImage.color.b, 0);
+        float timer = 0;
+        standardRuneImage.color = startColor;
+        while (standardRuneImage.color.a > 0)
+        {
+            standardRuneImage.color = Color.Lerp(startColor, endColor, fadeSpeed * timer);
+            timer += Time.deltaTime;
+            yield return 0;
+        }
+        standardRuneImage.color = endColor;
+        yield return 0;
     }
 }

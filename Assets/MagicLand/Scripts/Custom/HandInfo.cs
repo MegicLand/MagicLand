@@ -16,11 +16,13 @@ public class HandInfo : Singleton<HandInfo> {
     protected override void Awake()
     {
         InteractionManager.SourceUpdated += InteractionManager_SourceUpdated;
+        InteractionManager.SourceLost += InteractionManager_SourceLost;
     }
 
     protected override void OnDestroy()
     {
         InteractionManager.SourceUpdated -= InteractionManager_SourceUpdated;
+        InteractionManager.SourceLost -= InteractionManager_SourceLost;
     }
 
     private void InteractionManager_SourceUpdated(InteractionSourceState hand)
@@ -35,5 +37,10 @@ public class HandInfo : Singleton<HandInfo> {
         this.hand.enabled = handPressed;
         this.hand.rectTransform.anchoredPosition = handPosition_Screen;
         handPosition_World = this.hand.rectTransform.position;
+    }
+
+    private void InteractionManager_SourceLost(InteractionSourceState hand)
+    {
+        handPressed = false;
     }
 }
