@@ -133,4 +133,11 @@ public class PlayerBehavior : MonoBehaviour {
         info.currentRune = RuneCategory.None;
         info.currentEnchantment = next;
     }
+	public RuneCategory getRuneType(){
+		return info.currentRune;
+	}
+
+	public EnchantmentCategory getEnchantment(){
+		return info.currentEnchantment;
+	}
 }

@@ -7,10 +7,12 @@ using System;
 public class AttackState : State {
     private Transform player;
     private PlayerBehavior playerBehavior;
+	private MagicController MagicController;
 
     private bool isHolding;
     private Vector3 targetPos;
     private GameObject holdEffect;
+	private GameObject magic;
 
     public AttackState(Transform player)
     {
@@ -27,8 +29,8 @@ public class AttackState : State {
     {
         Debug.Log("Attack");
 
-        isHolding = true;
-        holdEffect = GameObject.Instantiate(playerBehavior.holdEffect);
+		isHolding = true;
+		holdEffect = MagicController.holdRune(playerBehavior.getRuneType());//generate holdEffect
     }
 
     public override void LeaveState(State nextState)
@@ -57,12 +59,8 @@ public class AttackState : State {
             }
 
             //魔法生效**************************************************************************************
-            GameObject magic = GameObject.Instantiate(playerBehavior.magic, HandInfo.handPosition_World, Quaternion.Euler(Vector3.zero));
-            LightingChain lightingChain = magic.GetComponent<LightingChain>();
-            lightingChain.startPos = HandInfo.handPosition_World;
-            lightingChain.endPos = targetPos;
-
-            isHolding = false;
+			magic = MagicController.generateRune(playerBehavior.getRuneType(), HandInfo.handPosition_World, targetPos);
+			isHolding = false;
         }
         else
         {
